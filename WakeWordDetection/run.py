@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 import sounddevice as sd
 from scipy.io.wavfile import write
 import bots.TriggerDetection.trigger_utils as tu
+import time
+from pydub import AudioSegment
+import bots.TriggerDetection.trigger_utils as tu
+from multiprocessing import Process
 
 Tx, Ty = 5511, 1375
 fs = 44100  # Sample rate
@@ -17,10 +21,6 @@ def detect_triggerword(input, model):
 
     predictions = model(input.detach().float()).detach().numpy()
 
-
-    for i in range(Ty):
-        if predictions[0, i, 0] > 0.5:
-            print("hello")
     return predictions
 
 def show_predictions(predictions):
@@ -28,17 +28,50 @@ def show_predictions(predictions):
     plt.ylabel('probability')
     plt.show()
 
+def listen():
+    listen_flag, count = 1, 0
+    while listen_flag:
+        fs = 44100  # Sample rate
+        seconds = 2  # Duration of recording
+        myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
+        sd.wait()  # Wait until recording is finished
+        write('recording.wav', fs, myrecording)
+        count +=1
+        if count == 10:
+            listen_flag = False
+
+
+def check_for_activate(filename, model):
+    start = time.time()
+    background = AudioSegment.from_wav("data/backgrounds/1.wav")
+    while 1:
+        audio_clip = AudioSegment.from_wav(filename)
+        new_background = background.overlay(audio_clip, position=4000)
+        new_background.export("user_input" + ".wav", format="wav")
+
+        user_spec = tu.graph_spectrogram("user_input.wav")
+        user_preds = detect_triggerword(model, user_spec)
+
+        for i in range(Ty):
+            if user_preds[0, i, 0] > 0.5:
+                print("hello")
+                return 1
+        end = time.time()
+
+        if end - start > 20:
+            return 0
+
 def main():
     model = torch.load("trigger_word_model")
 
-    # records 10 second clip of user and runs through model
-    myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
-    sd.wait()  # Wait until recording is finished
-    write('myrecording.wav', fs, myrecording)
+    p1 = Process(target=listen)
+    p1.start()
+    p2 = Process(target=check_for_activate("user_input.wav", model))
+    p2.start()
 
-    my_spec = tu.graph_spectrogram("myrecording.wav")
-    wake_preds = detect_triggerword(model, my_spec)
-    show_predictions(wake_preds)
+    if p2 == 1:
+        print("assistant activated")
+
 
 
 if __name__ == "__main__":
