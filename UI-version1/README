@@ -1,0 +1,6 @@
+This is the first version of the UI which used the PyQt5 library to run a flask web app as
+a local desktop application. The problem was Javascript wasn't able to run on the
+client side and that limited the functionality greatly.
+There are two options from this point:
+1. Move to a native web app
+2. Have the set up as flask desktop app and the assistant as a python app (e.g. QT, pygame etc.)
