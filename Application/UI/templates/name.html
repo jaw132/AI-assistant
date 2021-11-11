@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    What is your name?
+{% endblock %}
+
+{% block body %}
+
+<input type="text" autofocus autocomplete="off" placeholder=" Name"
+       value="{{ user }}" name="user_name"
+       style="height: 40px; width: 300px; font-size: 150%">
+
+{% endblock %}

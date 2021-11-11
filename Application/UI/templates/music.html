@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    Save your spotify username and password to enable music capabilities
+{% endblock %}
+
+{% block body %}
+<div>
+    <input type="text" autofocus autocomplete="off" placeholder=" Spotify username"
+       value="{{ spot_user }}" name="spot_user" style="height: 40px; width: 300px; font-size:150%">
+</div>
+<div>
+     &nbsp;
+</div>
+<div>
+    <input type="text" autofocus autocomplete="off" placeholder=" Spotify password"
+       value="{{ spot_pass }}" name="spot_pass" style="height: 40px; width: 300px; font-size: 150%">
+</div>
+
+{% endblock %}

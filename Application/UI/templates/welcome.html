@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link href="/static/styles.css" rel="stylesheet">
+    <title>AI Assistant</title>
+    <style>
+        body, footer{
+            font-family: sans-serif;
+            text-align: center;
+            color: #fff;
+            background: #000;
+            font-size: large;
+        }
+
+        footer{
+            width: 100%
+        }
+    </style>
+
+
+</head>
+<body>
+    <div>
+        <form method="post">
+            <div>
+                Welcome to your AI assistant, move to the next page to calibrate the initial settings.
+            </div>
+            <div>
+                <input style="bottom: 30px; right: 30px; position: fixed; width:40px; height: 40px"
+                       name="forwards" type="submit" value=">">
+            </div>
+        </form>
+    </div>
+
+</body>
+
+<footer style="position: fixed; bottom: 0px;">
+    <div style="text-align: center">
+        <tr>
+            {% for page in pages %}
+                {% if page %}
+                    <td>&#9679;&nbsp;</td>
+                {% else %}
+                    <td>&bull;&nbsp;</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </div>
+
+</footer>
+</html>
